@@ -21,8 +21,8 @@ const CriptoHeaderTitle = styled.div`
 `;
 
 const ImagenCripto = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
 `;
 
@@ -47,7 +47,6 @@ const Resultado = ({ resultado }) => {
     <ContenedorCripto>
       <CriptoHeader>
         <CriptoHeaderTitle>
-          Cripto:{" "}
           <ImagenCripto
             src={`https://cryptocompare.com/${IMAGEURL}`}
             alt="IMAGEN"

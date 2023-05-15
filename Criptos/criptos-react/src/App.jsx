@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import Formulario from "./components/Formulario";
 import ImagenCripto from "./img/bitcoin-y-critomonedas-101-2.webp";
 import Resultado from "./components/Resultado";
+import Spinner from "./components/Spinner";
 
 const Contenedor = styled.div`
   max-width: 900px;
@@ -54,16 +55,20 @@ const Heading = styled.h1`
 function App() {
   const [monedas, setMonedas] = useState({});
   const [resultado, setResultado] = useState({});
+  const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     if (Object.keys(monedas).length > 0) {
+      setResultado({});
       const cotizarCripto = async () => {
+        setCargando(true);
         const { moneda, criptomoneda } = monedas;
         const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
         const respuesta = await fetch(url);
         const resultado = await respuesta.json();
         setResultado(resultado.DISPLAY[criptomoneda][moneda]);
         //const api = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
+        setCargando(false);
       };
       cotizarCripto();
     }
@@ -79,6 +84,11 @@ function App() {
         </div>
       </Contenedor>
 
+      {cargando && (
+        <ContenedorResultado>
+          <Spinner />
+        </ContenedorResultado>
+      )}
       {resultado.PRICE && (
         <ContenedorResultado>
           <Resultado resultado={resultado} />
