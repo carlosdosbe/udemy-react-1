@@ -36,7 +36,7 @@ const Mensaje = styled.div`
   transition: 0.5s ease;
 `;
 
-const Formulario = () => {
+const Formulario = ({ setMonedas }) => {
   const [criptos, setCriptos] = useState([]);
   const [error, setError] = useState(false);
 
@@ -72,19 +72,22 @@ const Formulario = () => {
 
     if ([moneda, criptomoneda].includes("")) {
       setError(true);
-
-      setTimeout(() => {
-        setError(false);
-      }, 2500);
       return;
     }
+
+    setError(false);
+    setMonedas({
+      moneda,
+      criptomoneda,
+    });
   };
 
   return (
     <>
       {error && (
         <div>
-          <Mensaje>Todos los campos son necesarios</Mensaje>
+          {<Mensaje>Todos los campos son necesarios</Mensaje>}
+          {/*<Error>Todos los campos son necesarios</Error>*/}
         </div>
       )}
       <form onSubmit={handleSubmit}>

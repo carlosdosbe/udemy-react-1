@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Formulario from "./components/Formulario";
 import ImagenCripto from "./img/bitcoin-y-critomonedas-101-2.webp";
+import Resultado from "./components/Resultado";
 
 const Contenedor = styled.div`
   max-width: 900px;
@@ -13,6 +14,16 @@ const Contenedor = styled.div`
     grid-template-columns: repeat(2, 1fr);
     column-gap: 2rem;
   }
+`;
+
+const ContenedorResultado = styled.div`
+  max-width: 900px;
+  margin: 0 auto;
+  width: 90%;
+  background-color: #c5c8cf;
+  padding: 25px;
+  margin-top: 35px;
+  border-radius: 25px;
 `;
 
 const Imagen = styled.img`
@@ -41,14 +52,39 @@ const Heading = styled.h1`
 `;
 
 function App() {
+  const [monedas, setMonedas] = useState({});
+  const [resultado, setResultado] = useState({});
+
+  useEffect(() => {
+    if (Object.keys(monedas).length > 0) {
+      const cotizarCripto = async () => {
+        const { moneda, criptomoneda } = monedas;
+        const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
+        const respuesta = await fetch(url);
+        const resultado = await respuesta.json();
+        setResultado(resultado.DISPLAY[criptomoneda][moneda]);
+        //const api = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
+      };
+      cotizarCripto();
+    }
+  }, [monedas]);
+
   return (
-    <Contenedor>
-      <Imagen src={ImagenCripto} alt="imagen" />
-      <div>
-        <Heading>Precios criptomonedas</Heading>
-        <Formulario />
-      </div>
-    </Contenedor>
+    <>
+      <Contenedor>
+        <Imagen src={ImagenCripto} alt="imagen" />
+        <div>
+          <Heading>Precios criptomonedas</Heading>
+          <Formulario setMonedas={setMonedas} />
+        </div>
+      </Contenedor>
+
+      {resultado.PRICE && (
+        <ContenedorResultado>
+          <Resultado resultado={resultado} />
+        </ContenedorResultado>
+      )}
+    </>
   );
 }
 
